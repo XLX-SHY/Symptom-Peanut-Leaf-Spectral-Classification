@@ -1,80 +1,84 @@
-VTKB-for-Microalgae-Identification
+B-CNN-MFM-SK for Peanut Leaf Disease Identification
 
-官方 PyTorch 实现 | 论文处于投刊阶段，标题：《VTKB: A Microalgae Spectral Classification Network Based on Deep Learning Algorithms》提出 ViTKA 网络模型，基于 PyTorch 框架实现四类微生物藻类精度识别，兼顾推理效率与特征捕捉能力，助力水下环境发展。
+官方 TensorFlow/Keras 实现 | 论文标题：《Spectral Classification of Symptomatic Peanut Leaves Based on Deep Learning Algorithms》提出 B-CNN-MFM-SK 融合模型，基于 TensorFlow 框架实现花生叶片四类状态（健康、炭疽病、焦斑病、疮痂病）高精度识别，兼顾轻量化部署与田间检测适应性，助力智慧农业作物病害防控。
 
 Table of Contents
 
+研究背景与模型定位
+
+B-CNN-MFM-SK 核心创新点
+
+实验数据集：花生叶片双模态光谱数据集
+
+实验环境配置
+
+代码使用说明
+
+项目文件结构
+
+已知问题与注意事项
+
+引用与联系方式
+
 1\. 研究背景与模型定位
 
-2\. ViTKA 核心创新点
+花生作为重要经济作物，叶片病害（炭疽病、焦斑病、疮痂病等）直接导致产量下降 10%-30%。传统病害检测依赖人工目视鉴别与实验室生化分析，存在效率低（单样本耗时 3-5 分钟）、误判率高（依赖经验，误判率超 20%）、难以规模化田间监测的问题。
 
-3\. 实验数据集：四类微生物藻类数据集
+光谱检测技术凭借非破坏性、客观性、多波段特征等优势，已成为作物病害检测的核心技术。本文提出 B-CNN-MFM-SK（Bilinear Convolutional Neural Network-Maximum Feature Mapping-Adaptive Selection Kernel） 融合模型，整合三大核心模块协同优化：
 
-4\. 实验环境配置
+双线性 CNN（B-CNN）适配双模态光谱特征融合；
 
-5\. 代码使用说明
+最大特征映射（MFM）层避免光谱特征信息丢失；
 
-6\. 项目文件结构
+自适应选择核（SK）模块强化病害光谱差异区分。
 
-7\. 已知问题与注意事项
+模型基于 TensorFlow 1.14.0 + Keras 2.2.4 框架实现，针对花生叶片四类状态（健康、炭疽病、焦斑病、疮痂病）的反射 / 荧光双模态光谱数据进行高精度分类，为田间移动检测设备部署、作物病害早期防控提供技术支撑。
 
-8\. 引用与联系方式
+2\. B-CNN-MFM-SK 核心创新点
 
-1\. 研究背景与模型定位
+2.1 双线性 CNN（B-CNN）：双模态光谱特征深度融合
 
-微生物藻类是水体生态、水产养殖及碳循环的关键生物，其类别（如有害蓝藻、有益绿藻）与数量直接影响水质安全和生态平衡。传统藻类检测依赖人工镜检，存在效率低（单样本耗时 5-10 分钟）、依赖专业经验（误判率超 15%）、难以规模化监测（如大面积水体）的问题。
+针对花生叶片反射光谱（400-800nm）与荧光光谱（650-800nm）的信息互补特性，设计双并行 CNN 骨干网络：
 
-本文提出ViTKA（Vision Transformer-Kolmogorov-Arnold Networks-BiFormer）模型，通过三大核心模块协同优化：
+单模态特征提取：CNN-A 处理反射光谱 GAF 图像，捕捉叶绿素吸收相关特征；CNN-B 处理荧光光谱 GAF 图像，聚焦光合效率关联特征；
 
-改进 Vision Transformer（ViT）提升推理速度；
+双线性聚合运算：通过外积运算融合双模态特征，建立波段间关联，解决单一光谱特征区分度不足的问题，特征利用率提升 40%。
 
-引入 Kolmogorov-Arnold Networks（KAN）增强非线性特征表征；
+2.2 MFM 层：光谱特征信息保全
 
-融合 BiFormer 稀疏动态注意力提升鲁棒性。
+花生病害光谱的细微峰位差异（如 760nm 红边效应、685nm 荧光峰）是分类关键，MFM 层替代传统激活函数：
 
-模型基于 PyTorch 2.4.1 框架实现，针对四类常见微生物藻类（有害 + 有益）实现高精度识别，为水质监测、水产养殖藻类调控提供自动化技术支撑。
+避免梯度消失：通过最大特征映射机制，保留浅层卷积的光谱基线特征与深层的病害特异性特征；
 
-2\. ViTKA 核心创新点
+强化弱信号提取：针对感染初期叶片的光谱微弱变化，提升特征响应强度，为早期病害检测奠定基础。
 
-2.1 改进 Vision Transformer（ViT）：适配藻类小尺寸特征
+2.3 自适应 SK 模块：动态匹配光谱特征
 
-针对藻类图像（通常含密集小目标）和原始 ViT 计算冗余问题，优化两点：
+针对不同病害光谱的波段特异性（如焦斑病荧光强度最低、健康叶片反射光谱红边效应显著），设计 SK 卷积模块：
 
-编码器精简与窗口调整：编码器层数从 12 层减至 6 层（藻类特征维度低于叶片），局部窗口注意力尺寸从 16×16 调整为 8×8，适配藻类小目标，推理速度提升 45%（精度损失 < 0.8%）；
+多核自适应选择：内置 2×2、3×3 小尺寸卷积核，自动匹配光谱局部特征（如病害特征峰）与全局趋势；
 
-混合注意力机制：采用 “微窗口注意力（聚焦单藻细胞）+ 全局稀疏注意力（捕捉藻群分布）”，替代全尺寸注意力，降低 Token 计算量，适配移动端水质监测设备部署。
+通道注意力机制：通过全局平均池化（GAP）与全局最大池化（GMP）并行压缩，聚焦高贡献通道，降低环境噪声（如光照波动）干扰。
 
-2.2 KAN 非线性表征机制：强化藻类形态区分
+2.4 GAF 光谱转换：1D 到 2D 的特征适配
 
-藻类类别差异多体现在细微形态（如蓝藻的丝状体、绿藻的单细胞结构），KAN 模块替代传统全连接层实现：
+引入 Gramian Angular Field（GAF）算法，将一维反射 / 荧光光谱序列转换为 32×32 像素的 2D 图像，保留光谱波段的时序关联性与强度差异，解决深度学习模型难以直接处理一维光谱数据的痛点，分类准确率提升 8%-10%。
 
-分段非线性映射：针对藻类的细胞壁纹理、鞭毛数量等细粒度特征，通过 KAN 的分段函数强化区分（如蓝藻与硅藻的形态差异）；
-
-自适应背景过滤：结合水体背景特性（如浑浊度、杂质颗粒），设计动态激活函数，减少非藻类区域（如泥沙、气泡）对特征提取的干扰。
-
-2.3 BiFormer 稀疏动态注意力：提升水体场景鲁棒性
-
-针对藻类识别中 “水体光照波动、藻细胞遮挡” 等问题，融合 BiFormer 双路径注意力：
-
-动态通道激活：根据输入图像中藻细胞的密度，自动激活高贡献注意力通道（如藻细胞密集区域优先分配计算资源）；
-
-稀疏 Token 过滤：通过权重阈值（默认 0.3）过滤低价值 Token（如纯水体背景、微小杂质），聚焦藻细胞核心区域，鲁棒性提升 18%（针对光照变化、细胞重叠场景）。
-
-3\. 实验数据集：四类微生物藻类数据集
+3\. 实验数据集：花生叶片双模态光谱数据集
 
 3.1 数据集概况
 
-本研究基于四类微生物藻类中心序列识别数据集，数据集需联系作者获取或后续更新至公开存储平台：
+本研究数据集通过集成式双模态光谱检测系统采集，涵盖花生叶片四类核心状态，数据具有高一致性与非破坏性：
 
-数据集名称	包含类别	图像总数	图像分辨率	数据分布（训练：验证：测试）
+数据集名称	包含类别	光谱类型	样本总数	数据格式	图像分辨率（GAF 转换后）	数据分布（训练：验证：测试）
 
-四类微藻数据集	Pavlova、Pediastrum、Scenedesmus、Selenastrum capricornutum	8000+	统一 resize 至 384×384（适配 ViT 输入）	7:1:2（通过代码自动划分）
+花生叶片光谱数据集	健康（Healthy）、炭疽病（Anthracnose）、焦斑病（Scorch spot）、疮痂病（Scab）	反射光谱（400-800nm）、荧光光谱（650-800nm）	9700+（反射光谱 5060+、荧光光谱 4640+）	原始光谱数据（.csv）+ GAF 2D 图像（.png）	32×32	训练：验证：测试 = 3:1:0.45（按总样本 10% 为测试集划分）
 
 3.2 数据集获取与结构
 
 3.2.1 下载方式
 
-网盘链接及提取码：https://pan.quark.cn/s/ae696b65766a（提取码：3U9v）
+数据集可联系通讯作者获取（邮箱：caizhaopeng@huuc.edu.cn；zhaojunminhuuc@yeah.net），或通过科研数据平台：https://github.com/XLX-SHY/Symptom-Peanut-Leaf-Spectral-Classification.git
 
 3.2.2 文件夹组织
 
@@ -82,193 +86,271 @@ Table of Contents
 
 plaintext
 
-Microalgae\_dataset/
+Peanut\_Leaf\_Dataset/
 
-├── Pavlova/
+├── Reflectance\_spectra/  # 反射光谱数据
 
-├── verticilium\_wilt/
+│   ├── Healthy/
 
-├── Pediastrum/
+│   ├── Anthracnose/
 
-└── Selenastrum capricornutum/
+│   ├── Scorch\_spot/
+
+│   └── Scab/
+
+├── Fluorescence\_spectra/ # 荧光光谱数据
+
+│   ├── Healthy/
+
+│   ├── Anthracnose/
+
+│   ├── Scorch\_spot/
+
+│   └── Scab/
+
+└── GAF\_images/           # 预处理后的GAF 2D图像（自动生成）
+
+    ├── Reflectance/
+
+    └── Fluorescence/
 
 4\. 实验环境配置
 
-4.1 依赖安装
-
-推荐使用 Anaconda 创建虚拟环境，确保 PyTorch 版本与 CUDA 环境匹配（支持 GPU/CPU，优先推荐 GPU 加速）：
+推荐使用 Anaconda 创建虚拟环境，确保与论文实验环境一致（支持 GPU 加速，优先推荐 NVIDIA GTX 1080 及以上显卡）：
 
 bash
+
+运行
 
 \# 1. 创建并激活虚拟环境
 
-conda create -n vitkab-pytorch python=3.10
+conda create -n peanut-spectral python=3.7
 
-conda activate vitkab-pytorch
-
-
-
-\# 2. 安装PyTorch 2.4.1（GPU版本，需CUDA 12.1；CPU版本见下方备注）
-
-conda install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 pytorch-cuda=12.1 -c pytorch -c nvidia
+conda activate peanut-spectral
 
 
 
-\# （备注：CPU版本安装命令）
+\# 2. 安装TensorFlow/Keras（GPU版本，需CUDA 9.2 + CuDNN 7.0）
 
-\# pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cpu
+conda install tensorflow-gpu==1.14.0 keras==2.2.4 -c conda-forge
+
+conda install cudatoolkit==9.2 cudnn==7.0 -c nvidia
 
 
 
-\# 3. 安装其他依赖库
+\# 3. 安装核心依赖库（含光谱处理、GAF转换）
 
-pip install numpy~=2.0.1 matplotlib~=3.9.5 opencv-python~=4.12.0.88
+pip install numpy~=1.19.5 matplotlib~=3.3.4 opencv-python~=4.5.5.62
 
-pip install pandas~=2.3.2 pillow~=11.3.0 scikit-learn~=1.5.2
+pip install pandas~=1.1.5 pillow~=8.4.0 scikit-learn~=0.24.2
 
-pip install tqdm~=4.66.5 tensorboard~=2.17.0 torchmetrics~=1.4.0
+pip install tqdm~=4.62.3 spectral~=0.23.1 pyts~=0.12.0
 
 5\. 代码使用说明
 
-5.1 模型训练
+5.1 数据预处理：1D 光谱转 2D GAF 图像
 
-运行train.py脚本启动训练，支持通过命令行参数调整训练配置，示例命令如下：
+运行 data\_preprocess.py 脚本批量处理原始光谱数据，生成 GAF 图像：
 
 bash
 
+运行
+
+python data\_preprocess.py \\
+
+--spectral\_dir ./Peanut\_Leaf\_Dataset/Reflectance\_spectra \\  # 原始光谱根目录
+
+--save\_dir ./Peanut\_Leaf\_Dataset/GAF\_images/Reflectance \\   # GAF图像保存目录
+
+--image\_size 32 \\                                           # 图像分辨率（固定32×32）
+
+--spectral\_type reflectance                                 # 光谱类型（reflectance/fluorescence）
+
+5.2 模型训练
+
+运行 train.py 脚本启动双模态融合训练，支持单模态独立训练，示例命令如下：
+
+bash
+
+运行
+
 python train.py \\
 
---data\_dir ./cotton\_disease\_dataset \\  # 数据集根目录（解压后的路径）
+--data\_dir ./Peanut\_Leaf\_Dataset/GAF\_images \\  # GAF图像根目录
 
---epochs 80 \\                          # 训练轮数
+--modal fusion \\                              # 模态选择（reflectance/fluorescence/fusion）
 
---batch\_size 32 \\                      # 批次大小（根据GPU显存调整，16/32/64）
+--epochs 500 \\                                 # 训练轮数（论文最优500轮）
 
---lr 5e-5 \\                            # 初始学习率
+--batch\_size 64 \\                             # 批次大小（根据GPU显存调整）
 
---weight\_decay 1e-5 \\                  # 权重衰减（防止过拟合）
+--lr 1e-4 \\                                   # 初始学习率
 
---save\_dir ./weights \\                 # 模型权重保存目录（.pth格式）
+--weight\_decay 1e-5 \\                         # 权重衰减（防止过拟合）
 
---log\_interval 20 \\                    # 每20个batch打印一次训练日志
+--save\_dir ./peanut\_weights \\                  # 模型权重保存目录（.h5格式）
 
---device GPU                           # 训练设备（GPU/CPU）
+--log\_interval 20 \\                           # 每20个batch打印训练日志
+
+--device GPU \\                                 # 训练设备（GPU/CPU）
+
+--num\_classes 4                                # 类别数（固定为4）
 
 关键参数说明
 
 参数名	含义	默认值
 
---data\_dir	数据集根目录路径	./cotton\_disease\_dataset
+--data\_dir	GAF 图像根目录路径	./Peanut\_Leaf\_Dataset/GAF\_images
 
---epochs	训练轮数	80
+--modal	光谱模态选择（支持单模态 / 双模态融合）	fusion
 
---batch\_size	批次大小（GPU 显存不足时可设为 16）	32
+--epochs	训练轮数（论文最优 500 轮）	500
 
---lr	初始学习率（采用余弦退火学习率调度）	5e-5
+--batch\_size	批次大小（GTX 1080 适配 64）	64
 
---save\_dir	权重保存目录（自动生成，.pth 格式）	./weights
+--lr	初始学习率	1e-4
 
---device	训练设备（GPU 需配置 CUDA 12.1+）	GPU
+--save\_dir	权重保存目录（自动生成）	./peanut\_weights
 
-5.2 模型预测
+--device	训练设备（GPU 需配置 CUDA 9.2+）	GPU
 
-使用训练好的权重进行单张微藻图像预测，运行predict.py脚本，示例命令如下：
+--num\_classes	类别数（四类状态固定为 4）	4
+
+5.3 模型预测
+
+使用训练好的权重进行单张 GAF 图像或原始光谱数据预测，运行 predict.py 脚本：
 
 bash
 
+运行
+
 python predict.py \\
 
---image\_path ./examples/cotton\_brown\_spot.jpg \\  # 输入图像路径
+--input\_path ./examples/scab\_reflectance.csv \\  # 输入路径（.csv光谱/.png GAF图像）
 
---weight\_path ./weights/best\_vitkab.pth \\         # 预训练权重路径（PyTorch .pth格式）
+--weight\_path ./peanut\_weights/best\_model.h5 \\   # 预训练权重路径（.h5格式）
 
---device CPU                                      # 预测设备（GPU/CPU）
+--modal fusion \\                                  # 模态选择（需与训练时一致）
+
+--device GPU \\                                    # 预测设备（GPU/CPU）
+
+--is\_spectral True                                # 是否为原始光谱数据（True/False）
 
 预测输出示例
 
 plaintext
 
-输入图像路径：./examples/cotton\_brown\_spot.jpg
+输入路径：./examples/scab\_reflectance.csv
 
-预测类别：Pa(Pavlova)
+输入类型：原始反射光谱数据（自动转换为32×32 GAF图像）
 
-置信度：0.9982
+预测类别：Scab（疮痂病）
 
-预测耗时：12.3ms（CPU）/ 2.1ms（GPU）
+置信度：0.9872
+
+光谱特征分析：760nm红边效应显著，符合疮痂病光谱特征；荧光强度低于健康叶片35%
+
+防控建议：建议喷施苯醚甲环唑类杀菌剂，7-10天一次，连续2-3次
+
+预测耗时：8.6ms（GPU）/ 15.3ms（CPU）
 
 6\. 项目文件结构
 
 plaintext
 
-vitka-for-microalgae-identification/  # 项目根目录（更名）
+b-cnn-mfm-sk-peanut-disease/  # 项目根目录
 
-├── microalgae\_dataset/  # 四类微生物藻类数据集（替换原棉花数据集）
+├── Peanut\_Leaf\_Dataset/       # 花生叶片双模态光谱数据集
 
-├── examples/            # 藻类示例图像（如microcystis\_01.jpg）
+│   ├── Reflectance\_spectra/   # 反射光谱原始数据（.csv）
 
-├── models/              # 模型核心模块（仅修改ViTKAB.py）
+│   ├── Fluorescence\_spectra/  # 荧光光谱原始数据（.csv）
 
-│   ├── vit\_improve.py   # 同原项目（已适配藻类窗口大小）
+│   └── GAF\_images/            # GAF转换后的2D图像（自动生成）
 
-│   ├── kan\_module.py    # 同原项目（已适配藻类特征）
+├── examples/                  # 示例文件
 
-│   ├── biformer\_attention.py # 同原项目
+│   ├── scab\_reflectance.csv   # 疮痂病反射光谱示例
 
-│   └── ViTKAB.py        # 核心修改：num\_classes=4（藻类类别数）
+│   └── healthy\_gaf.png        # 健康叶片GAF图像示例
 
-├── dataset/             # 数据处理（新增藻类预处理）
+├── models/                    # 模型核心模块
 
-│   └── data\_loader.py   # 修改：新增藻类图像去噪、对比度增强步骤
+│   ├── b\_cnn.py               # 双线性CNN骨干网络
 
-├── train.py             # 新增--num\_classes参数（默认4）
+│   ├── mfm\_layer.py           # 最大特征映射（MFM）层
 
-├── predict.py           # 新增“风险提示”输出模块（有害/有益藻区分）
+│   ├── sk\_module.py           # 自适应选择核（SK）模块
 
-├── algae\_weights/       # 藻类模型权重保存目录（替换原weights）
+│   ├── gaf\_conversion.py      # GAF 1D-2D转换工具
 
-└── README.md            # 本说明文档（适配藻类）
+│   └── b\_cnn\_mfm\_sk.py        # 核心融合模型（分类头）
+
+├── dataset/                   # 数据处理模块
+
+│   └── data\_loader.py         # 光谱数据加载、增强、批次生成
+
+├── data\_preprocess.py         # 批量光谱数据预处理脚本
+
+├── train.py                   # 模型训练脚本（支持双模态融合）
+
+├── predict.py                 # 模型预测脚本（含防控建议输出）
+
+├── peanut\_weights/            # 模型权重保存目录
+
+└── README.md                  # 项目说明文档
 
 7\. 已知问题与注意事项
 
-框架适配：本项目仅支持 PyTorch 2.4.1 及以上版本，不兼容 TensorFlow 或低版本 PyTorch（<2.0）；
+框架适配：仅支持 TensorFlow 1.14.0 + Keras 2.2.4，依赖 CUDA 9.2 + CuDNN 7.0，不兼容高版本 TensorFlow（≥2.0）或 PyTorch；
 
-输入尺寸：模型固定输入为 384×384×3（RGB 图像），预测时会自动 resize 输入图像，建议原始图像分辨率≥384×384，避免低分辨率导致的特征丢失；
+光谱数据格式：原始光谱需为 .csv 格式，第一列为波长（nm），第二列为光谱强度（反射率 / 荧光强度），无表头，波长范围需严格匹配（反射 400-800nm / 荧光 650-800nm）；
 
-数据集扩展：如需新增棉花病害类别，需补充对应类别图像数据，并修改models/ViTKAB.py中num\_classes参数（当前为 4，新增后需同步调整）；
+输入尺寸：GAF 图像固定 32×32 像素，代码自动统一光谱采样点（反射光谱 400 个点 / 荧光光谱 300 个点），无需手动调整；
 
-GPU 依赖：训练时推荐使用 CUDA 12.1 及以上版本 GPU（显存≥8GB），CPU 训练耗时较长（单轮 epoch 约 120 分钟，GPU 约 15 分钟）；
+模态一致性：双模态融合训练的权重仅适用于融合预测，单模态训练权重不可跨模态使用；
 
-权重格式：模型权重仅支持 PyTorch 的.pth格式，不兼容 TensorFlow 的.h5格式，请勿混用跨框架权重。
+GPU 依赖：训练推荐使用显存≥8GB 的 GPU，CPU 训练耗时较长（单轮 epoch 约 90 分钟，GPU 约 10 分钟）；
+
+田间部署：当前模型基于实验室数据训练，田间应用需补充不同土壤、光照、湿度条件下的样本，提升鲁棒性。
 
 8\. 引用与联系方式
 
 8.1 引用方式
 
-论文处于投刊阶段，正式发表后将更新完整 BibTeX 引用格式，当前可临时引用：
+论文已投刊，正式发表后更新完整 BibTeX 格式，当前引用格式如下：
 
 bibtex
 
-@article{vitka\_Microalgae,
+@article{xu2024spectral,
 
-title={VTKB: A Microalgae Spectral Classification Network Based on Deep Learning Algorithms},
+title={Spectral Classification of Symptomatic Peanut Leaves Based on Deep Learning Algorithms},
 
-author={\[作者姓名，待发表时补充]},
+author={Xu, Laixiang and Chen, Xinjia and Yang, Xiaodong and Zhang, Yang and Cai, Zhaopeng and Zhao, Junmin},
 
-journal={\[期刊名称，待录用后补充]},
+journal={\[待发表期刊]},
 
-year={2025},
+year={2024},
 
-note={Manuscript submitted for publication}
+volume={\[待分配]},
+
+number={\[待分配]},
+
+pages={1-18},
+
+publisher={\[待发表出版社]},
+
+doi={\[待分配]}
 
 }
 
 8.2 联系方式
 
-若遇到代码运行问题、数据集获取需求或学术交流，可通过以下方式联系：
+若遇到代码运行问题、数据集获取或学术交流，可联系：
 
-邮箱：songhongyunhuuc@yeah.net（替换为实际邮箱）
+通讯作者邮箱：caizhaopeng@huuc.edu.cn；zhaojunminhuuc@yeah.net
 
-GitHub Issue：直接在本仓库提交 Issue，会在 1-3 个工作日内回复；
+项目维护邮箱：xulaixiang@hainanu.edu.cn
 
-学术交流：可发送主题为 “ViTKA - 学术交流” 的邮件，附个人简介及交流方向，将优先回复。
+学术交流：发送主题为 “花生叶片光谱分类 - 学术交流” 的邮件，附个人简介及研究方向，将优先回复。
 
