@@ -1,16 +1,10 @@
-B-CNN-MFM-SK for Peanut Leaf Disease Identification
+**B-CNN-MFM-SK for Peanut Leaf Disease Identification**
 
 
 
+&nbsp;   官方 TensorFlow/Keras 实现 | 论文标题：《Spectral Classification of Symptomatic Peanut Leaves Based on Deep Learning Algorithms》  
 
-
-
-
-
-
-&nbsp;     官方 TensorFlow/Keras 实现 | 论文标题：《Spectral Classification of Symptomatic Peanut Leaves Based on Deep Learning Algorithms》  
-
-&nbsp;     提出 B-CNN-MFM-SK 融合模型，实现花生叶片四类状态（健康、炭疽病、焦斑病、疮痂病）高精度识别，兼顾轻量化部署与田间检测适应性。
+&nbsp;   提出 B-CNN-MFM-SK 融合模型，实现花生叶片四类状态（健康、炭疽病、焦斑病、疮痂病）高精度识别，兼顾轻量化部署与田间检测适应性。
 
 &nbsp;   
 
