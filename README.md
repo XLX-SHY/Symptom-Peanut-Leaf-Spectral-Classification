@@ -335,48 +335,7 @@
 **--num\_classes 4                                # 类别数（固定为4）**
 
 
-
-**关键参数说明：**
-
-
-
-**参数名                                       含义                                                             默认值**
-
-
-
-**--data\_dir                       GAF 图像根目录路径                   ./Peanut\_Leaf\_Dataset/GAF\_images**
-
-
-
-**--modal               光谱模态选择（支持单模态/双模态融合）                      fusion**
-
-
-
-**--epochs                  训练轮数（论文最优500轮）                                         500**
-
-
-
-**--batch\_size             批次大小（GTX 1080适配64）                                     64**
-
-
-
-**--lr                                             初始学习率                                                    1e-4**
-
-
-
-**--save\_dir                        权重保存目录（自动生成）                         ./peanut\_weights**
-
-
-
-**--device                      训练设备（GPU需配置CUDA 9.2+）                          GPU**
-
-
-
-**--num\_classes                     类别数（四类状态固定为4）                                 4**
-
-
-
-**5.3 模型预测**
+**5.2 模型预测**
 
 
 
@@ -412,7 +371,7 @@
 
 
 
-**输入路径：./examples/scab\_reflectance.csv**
+**输入路径：Symptom-Peanut-Leaf-Spectral-Classification\Data\Fluorescence  spectra GAF images\Fluorescence  spectra GAF images\Fluorescence  spectra GAF images\1-Scab-1159\Sc-0019.jpg"**
 
 
 
