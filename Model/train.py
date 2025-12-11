@@ -3,8 +3,7 @@ from torchvision import transforms, datasets, utils
 
 import torch
 import torch.optim as optim
-from newzfnet import ZFNet
-
+from newzfnet import Model
 import os
 import json
 import time
@@ -76,7 +75,7 @@ loss_function = nn.CrossEntropyLoss()
 # 优化器 这里用Adam
 
 # 训练参数保存路径
-save_path = './ZFNet.pth'
+save_path = './CNN.pth'
 # 训练过程中最高准确率
 best_acc = 0.0
 optimizer = optim.Adam(net.parameters(), lr=0.0002)

@@ -371,7 +371,7 @@
 
 
 
-**输入路径：Symptom-Peanut-Leaf-Spectral-Classification\Data\Fluorescence  spectra GAF images\Fluorescence  spectra GAF images\Fluorescence  spectra GAF images\1-Scab-1159\Sc-0019.jpg"**
+**输入路径：Symptom-Peanut-Leaf-Spectral-Classification\Data\Fluorescence  spectra GAF images\1-Scab-1159\Sc-0019.jpg"**
 
 
 
